@@ -7,9 +7,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Rock Paper Scissors game for the Steem blockchain.">
   <meta name="keywords" content="steem,steemit,blockchain,rps,rock,paper,scissors,game">
-  <script type="text/javascript" src="https://spelmakare.se/files/js/jquery.min.js"></script>
-  <script type="text/javascript" src="https://spelmakare.se/files/js/purify.min.js"></script>
-  <script type="text/javascript" src="https://spelmakare.se/files/js/dsteem.js"></script>
+  <script type="text/javascript" src="js/jquery.min.js"></script>
+  <script type="text/javascript" src="js/purify.min.js"></script>
+  <script type="text/javascript" src="js/dsteem.js"></script>
   <script type="text/javascript" src="rps_files/rps.js"></script>
   <script type="text/javascript" src="rps_files/encrypt.js"></script>
   <script type="text/javascript" src="rps_files/json-comments.js"></script>
