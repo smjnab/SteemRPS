@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang=en>
+
+<head>
+  <title>Raid Ponzi Steemit!</title>
+  <meta charset=utf-8>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Rock Paper Scissors game for the Steem blockchain.">
+  <meta name="keywords" content="steem,steemit,blockchain,rps,rock,paper,scissors,game">
+  <script type="text/javascript" src="https://spelmakare.se/files/js/jquery.min.js"></script>
+  <script type="text/javascript" src="https://spelmakare.se/files/js/purify.min.js"></script>
+  <script type="text/javascript" src="https://spelmakare.se/files/js/dsteem.js"></script>
+  <script type="text/javascript" src="rps_files/rps.js"></script>
+  <script type="text/javascript" src="rps_files/encrypt.js"></script>
+  <script type="text/javascript" src="rps_files/json-comments.js"></script>
+  <link rel="stylesheet" href="rps_files/style.css">
+</head>
+
+<body>
+  <div id="container">
+    <h1>Raid Ponzi Steemit!</h1>
+
+    <!-- USER FORM -->
+    <div id="formDialog">
+      <form id="rpsForm">
+        <p class="question" id="question1">Tell me the name of a user on
+          <a href="https://steemit.com" target="_blank">Steemit.com</a> that you want to challenge.
+          <br />
+          <input class="inputText" id="userToChallenge" type="text" name="userToChallenge" autocomplete="off">
+          <button class="inputNext" id="inputNext1" name="inputNext">Next</button>
+        </p>
+        <p class="question" id="question2">Thanks. Now, tell me the reason for your challenge.
+          <br />
+          <input type="radio" id="rpsChallengeChoice" name="rpsChallengeChoice" value="rpsChallenge1">
+          <span class="radioText">
+            I feel like playing, that's all.
+          </span>
+          <br />
+          <input type="radio" id="rpsChallengeChoice" name="rpsChallengeChoice" value="rpsChallenge2">
+          <span class="radioText">
+            I disagree with a post that the user made.
+          </span>
+          <br />
+          <input type="radio" id="rpsChallengeChoice" name="rpsChallengeChoice" value="rpsChallenge3">
+          <span class="radioText">
+            I find the user interesting and I'm trying to initiate contact.
+          </span>
+        </p>
+        <p class="question" id="question3">
+          <span id="userInject">Please select the post made by $userToChallenge that made you want this.</span>
+          <br />
+          <span id="rpsCUTopicChoice"></span>
+        </p>
+        <p class="question" id="question4">Make your choice.
+          <br />
+          <span id="rpsChoice" name="rpsChoice">
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="raid">
+            <span class="radioText">
+              Raid (beats Steemit)
+            </span>
+            <br/>
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="ponzi">
+            <span class="radioText">
+              Ponzi (beats Raid)
+            </span>
+            <br/>
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="steemit">
+            <span class="radioText">
+              Steemit (beats Ponzi)
+            </span>
+          </span>
+        </p>
+        <p class="question" id="question5">Excellent! Let's get this posted...</p>
+        <p class="question" id="question6">To be able to post the challenge, I will need to know your
+          <a href="https://steemit.com" target="_blank">Steemit.com</a> user name.
+          <br />
+          <input class="inputText" id="userName" type="text" name="userName" autocomplete="off">
+          <button class="inputNext" id="inputNext2" name="inputNext">Next</button>
+        </p>
+        <p class="question" id="question7">
+          <span id="injectKeyLink"></span>
+          <br />
+          <input class="inputText" id="postKey" type="password" name="postKey" autocomplete="off">
+          <button class="inputNext" id="inputNext3" name="inputNext">Next</button>
+        </p>
+        <p class="question" id="question8">
+          <!-- POST PREVIEW -->
+          <div id="rpsPreviewTitle">
+            <b>Post preview</b>
+            <div id="rpsPreview">
+
+            </div>
+          </div>
+          <br />
+          <input id="submit" type="submit" action="" value="Let the game begin!">
+        </p>
+        <div id="helperText"></div>
+      </form>
+
+      <!-- FORM FOR RESPONSE -->
+      <form id="rpsFormResponse">
+        <p class="question" id="question1">
+          <span id="injectChallenger">$challengedUser!</span> Good of you to accept. Let's move on, make your choice.
+          <br />
+          <span id="rpsChoice" name="rpsChoice">
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="raid">
+            <span class="radioText">
+              Raid (beats Steemit)
+            </span>
+            <br/>
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="ponzi">
+            <span class="radioText">
+              Ponzi (beats Raid)
+            </span>
+            <br/>
+            <input type="radio" id="rpsChoice" name="rpsChoice" value="steemit">
+            <span class="radioText">
+              Steemit (beats Ponzi)
+            </span>
+          </span>
+        </p>
+        <p class="question" id="question2">
+          <span id="injectKeyLink"></span>
+          <br />
+          <input class="inputText" id="postKey" type="password" name="postKey" autocomplete="off">
+          <button class="inputNext" id="inputNext3" name="inputNext">Next</button>
+        </p>
+        <p class="question" id="question3">
+          <!-- POST PREVIEW -->
+          <div id="rpsPreviewTitle">
+            <b>Post preview</b>
+            <div id="rpsPreview">
+
+            </div>
+          </div>
+          <br />
+          <input id="submit" type="submit" action="" value="Shake it, 1 2 3!">
+        </p>
+        <div id="helperText"></div>
+      </form>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div id="service">
+        <p>Service provided as is. I've done my best to make it stable and secure. I take no responsibility for your usage of
+          this service.</p>
+        <p>Created by
+          <a href="https://steemit.com/@smjn">@smjn</a> -
+          <a href="https://spelmakare.se">Spelmakare.se</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>
