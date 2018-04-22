@@ -488,12 +488,12 @@ function RPS() {
         $("#userInject").html(`Please select the post made by ${userToChallenge} that made you want this.`);
 
         /// Add blog posts. User and date verified in MakeRadioButton.
-        blogs.forEach(element => {
+        if (blogs != undefined) blogs.forEach(element => {
             MakeRadioButton(element, "Blog");
         });
 
         /// Add comments. User and date verified in MakeRadioButton.
-        comments.forEach(element => {
+        if (comments != undefined) comments.forEach(element => {
             MakeRadioButton(element, "Comment");
         });
 
