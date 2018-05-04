@@ -2,11 +2,6 @@
 /// JSONS FOR POSTING COMMENTS TO STEEM
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var beneficiary;
-
-if (client.addressPrefix == "STX") beneficiary = "smjnmmb";
-else beneficiary = "smjn";
-
 /// For sending the challenge.
 var jsonChallenge = {
     "parent_author": "",                ///Name of person getting challenged V
@@ -24,29 +19,6 @@ var jsonChallenge = {
     }
 };
 
-var jsonChallengeOptions = {
-    "author": "",                               ///challenger name V
-    "permlink": "",                             ///perm link to post with challenge V
-    "max_accepted_payout": "1000000.000 SBD",   ///V
-    "percent_steem_dollars": 10000,             ///V
-    "allow_votes": true,                        ///V
-    "allow_curation_rewards": true,             ///V
-    "extensions": [
-        [
-            0,                                  /// ? V
-            {
-                "beneficiaries": [              /// V
-                    {
-                        "weight": 50,           /// 50 = 0.5% of payout to beneficiary. V
-                        "account": beneficiary  /// name of benficiary V
-                    }
-                ]
-            }
-        ]
-    ]
-};
-
-
 /// For sending the response to challenge.
 var jsonResponse = {
     "parent_author": "",                ///Name of challenger V
@@ -61,26 +33,4 @@ var jsonResponse = {
         "app": "smjnrps/0.1",           ///Name of this script. V
         "tags": ["smjnrps"]             ///Tags. V
     }
-};
-
-var jsonResponseOptions = {
-    "author": "",                               ///challenged name V
-    "permlink": "",                             ///perm link to challenger response post V
-    "max_accepted_payout": "1000000.000 SBD",   ///V
-    "percent_steem_dollars": 10000,             ///V
-    "allow_votes": true,                        ///V
-    "allow_curation_rewards": true,             ///V
-    "extensions": [
-        [
-            0,                                  /// ? V
-            {
-                "beneficiaries": [              /// V
-                    {
-                        "weight": 50,           /// 50 = 0.5% of payout to beneficiary. V
-                        "account": beneficiary  /// name of benficiary V
-                    }
-                ]
-            }
-        ]
-    ]
 };
