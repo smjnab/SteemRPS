@@ -420,8 +420,6 @@ function RPS() {
             jsonChallenge.json_metadata.challenged = userToChallenge;
             jsonChallenge.json_metadata.challenge_type = reasonForChallenge;
             jsonChallenge.json_metadata.challenger_rpschoicemd5 = rpsChoiceMD5;
-            jsonChallengeOptions.author = userName;
-            jsonChallengeOptions.permlink = permLink;
         }
         else {
             jsonResponse.author = userName;
@@ -431,8 +429,6 @@ function RPS() {
             jsonResponse.body = actualResponse;
             jsonChallenge.json_metadata.challenger = userToChallenge;   ///Challenger is userToChallenge in response!
             jsonChallenge.json_metadata.result = winner;
-            jsonResponseOptions.author = userName;
-            jsonResponseOptions.permlink = permLink;
         }
 
         $("#question8").delay(200).fadeIn(300);
@@ -542,26 +538,23 @@ function RPS() {
         if (!readyToSubmit) return;
 
         var comment;
-        var options;
 
         if (formInUse === "#rpsForm") {
             var metaAsString = JSON.stringify(jsonChallenge.json_metadata);
             jsonChallenge.json_metadata = metaAsString;
 
             comment = jsonChallenge;
-            options = jsonChallengeOptions;
         }
         else {
             var metaAsString = JSON.stringify(jsonResponse.json_metadata);
             jsonResponse.json_metadata = metaAsString;
 
             comment = jsonResponse;
-            options = jsonResponseOptions;
         }
 
         const key = dsteem.PrivateKey.fromString(privateKey);
 
-        client.broadcast.commentWithOptions(comment, options, key).then(function (result) {
+        client.broadcast.comment(comment, key).then(function (result) {
             if (formInUse === "#rpsForm") {
                 $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
             }
