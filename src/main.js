@@ -1,15 +1,15 @@
+const { Client, PrivateKey } = require("dsteem");
+const $ = require("jquery");
+const DOMPurify = require("dompurify");
+const { MakeMD5 } = require("./encrypt");
+const { jsonChallenge, jsonResponse } = require("./json_comments");
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// CONFIGURE & INIT
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// Create steem client for test network.
-/*var client = new dsteem.Client("https://testnet.steem.vc", {
-    addressPrefix: "STX",
-    chainId: "79276aea5d4877d9a25892eaa01b0adf019d3e5cb12a97478df3298ccdd01673"
-});*/
-
 /// Create client for live network.
-var client = new dsteem.Client("https://api.steemit.com", { timeout: 2000 });
+var client = new Client("https://api.steemit.com", { timeout: 2000 });
 const secondServer = "https://api.steemitstage.com/"; // If api.steemit.com does not respond, try this server.
 const thirdServer = "https://gtg.steem.house:8090"; // If api.steemit.com does not respond, try this server.
 const fourthServer = "https://rpc.steemliberator.com/"; // If api.steemit.com does not respond, try this server.
@@ -25,17 +25,17 @@ function NetWorkCheck() {
         if (error.message.toLowerCase().includes("network") && failCount < 3) {
             /// Try again with second server.
             if (failCount === 0) {
-                client = new dsteem.Client(secondServer, { timeout: 3000 });
+                client = new Client(secondServer, { timeout: 3000 });
             }
 
             /// Try again with third server.
             else if (failCount === 1) {
-                client = new dsteem.Client(thirdServer, { timeout: 4000 });
+                client = new Client(thirdServer, { timeout: 4000 });
             }
 
             /// Try again with fourth server.
             else if (failCount === 2) {
-                client = new dsteem.Client(fourthServer, { timeout: 6000 });
+                client = new Client(fourthServer, { timeout: 6000 });
             }
 
             NetWorkCheck();
@@ -56,7 +56,6 @@ function RPS() {
     var comments;               /// Store comments fetched.
     var countPosts = 0;         /// Track how many posts userToChallenge has done within 7 days.
     var userName;               /// Steemit.com user name for the one sending the challenge.
-    var privateKey;             /// Private post key or userName.
     var rpsChoice;              /// The RPS choice a user makes.
     var permLink;               /// The perm_link to the post on steemit.com
     var permLinkParent;
@@ -201,24 +200,13 @@ function RPS() {
     $(document).on("click", "#userName", function () {
         $("#inputNext2").prop("disabled", false);
     });
-    $(document).on("click", "#postKey", function () {
-        $("#inputNext3").prop("disabled", false);
-    });
 
     /// If user fills in something incorrect, step back the form for a refill.
-    function StepBackForm(from, to, resetForm) {
+    function StepBackForm(from, to) {
         $("#question" + from).hide();
         $("#question" + to).fadeIn(300);
 
         $(formInUse)[0].reset();
-
-        /// I remove use of resetForm, but left it as this was used for last step of form submission.
-        if (!resetForm) {
-            $("#rpsPreview").hide();
-            $("#rpsPreviewTitle").hide();
-            $("#question7").hide();
-            $("#submit").hide();
-        }
     }
 
 
@@ -250,18 +238,8 @@ function RPS() {
         /// Fade out current question.
         $("#" + currentQuestion).fadeOut(100);
 
-        ///This does nothing other than move along, was a feature that I removed.
-        if (nextQuestion === "#question5") {
-            $("#question6").delay(200).fadeIn(300);
-        }
-
-        //Do nothing, waiting for account verification.
-        else if (nextQuestion === "#question8" || (formInUse === "#rpsFormResponse" && nextQuestion === "#question3")) {
-
-        }
-
-        /// Fade in regular next question.
-        else $(nextQuestion).delay(200).fadeIn(300);
+        /// Fade in next question.
+        $(nextQuestion).delay(200).fadeIn(300);
 
         /// Always scroll window to top, when fecthing posts you can end up far down.
         window.scrollTo(0, 0);
@@ -284,7 +262,7 @@ function RPS() {
 
                         /// Account incorrect (not following steemit guidlines), go back.
                         if (accounts.length <= 0) {
-                            StepBackForm(2, 1, true);
+                            StepBackForm(2, 1);
                         }
 
                         else {
@@ -294,7 +272,7 @@ function RPS() {
 
                         /// Account not found, go back.  
                     }, function (error) {
-                        StepBackForm(2, 1, true);
+                        StepBackForm(2, 1);
                     });
 
                     break;
@@ -314,24 +292,36 @@ function RPS() {
                     /// Get the Duel choice. Appending in last question.
                     rpsChoice = Sanitize($("input[name=rpsChoice]:checked", formInUse).val());
                     break;
-                case 6:
+                case 5:
                     /// Get user name of challenger.
                     userName = CreateUserName("#userName");
 
-                    MakeMD5("create", userName, permLink, rpsChoice).then(function (result) {
-                        rpsChoiceMD5 = Sanitize(JSON.parse(result).md5);
+                    GetAccount(userName).then(function (accounts) {
+
+                        /// Account incorrect (not following steemit guidlines), go back.
+                        if (accounts.length <= 0) {
+                            StepBackForm(5, 5);
+                        }
+
+                        /// Verfied account
+                        else {
+                            MakeMD5("create", userName, permLink, rpsChoice).then(function (result) {
+
+                                rpsChoiceMD5 = Sanitize(JSON.parse(result).md5);
+                                AllOKAllowSubmit();
+
+                            }, function (error) {
+                                ///TODO
+                                console.log(error)
+                            });
+                        }
+
+                        /// Account failed as no such user.
                     }, function (error) {
-                        ///TODO
-                        console.log(error)
+                        StepBackForm(5, 5);
+                        console.log("User name not found.");
                     });
 
-                    $("#injectKeyLink").html(`I also need your <a href="https://steemit.com/@${userName}/permissions" target="_blank">private post key</a>.`);
-                    $("#helperText").html(`Key never leaves your computer. It is used to verify your account name and to make the post, all done by the client (your browser). You can <a href="rps_files/rps.js" target="_blank" >review me here</a >.`);
-                    $("#helperText").delay(200).fadeIn(300);
-                    break;
-                case 7:
-                    $("#helperText").hide();
-                    PreSubmitVerification(7, 6);
                     break;
             }
         }
@@ -356,34 +346,16 @@ function RPS() {
                     }, function (error) {
                         ///TODO
                     });
-
-                    $("#injectKeyLink").html(`Excellent! I'll need your <a href="https://steemit.com/@${userName}/permissions" target="_blank">private post key</a> to post the response to the challenge.`);
-                    $("#helperText").html(`Key never leaves your computer. It is used to verify your account name and to make the post, all done by the client (your browser). You can <a href="rps_files/rps.js" target="_blank" >review me here</a >.`);
-                    $("#helperText").delay(200).fadeIn(300);
                     break;
                 case 2:
-                    $("#helperText").hide();
                     permLinkParent = permLink;
                     permLink = "re-";
                     permLink += permLinkParent;
 
-                    PreSubmitVerification(2, 1);
+                    AllOKAllowSubmit();
                     break;
             }
         }
-    }
-
-    function PreSubmitVerification(atQuestionOnFail, toQuestionOnFail) {
-        /// Get the private posting key.
-        privateKey = Sanitize($("#postKey").val());
-
-        if (privateKey.length <= 3) {
-            StepBackForm(atQuestionOnFail, toQuestionOnFail, true);
-            return;
-        }
-
-        /// Verify that the user name and post key belong together. If verified, AllOKAllowSubmit() is called.
-        VerifyAccount(userName);
     }
 
     function WinnerWinnerRaidPonziOrSteemitDinner(rpsChoiceChallenger, rpsChoiceChallenged) {
@@ -431,10 +403,10 @@ function RPS() {
             jsonChallenge.json_metadata.result = winner;
         }
 
-        $("#question8").delay(200).fadeIn(300);
-        $("#rpsPreviewTitle").delay(200).fadeIn(300);
-        $("#rpsPreview").delay(200).fadeIn(300);
-        $("#submit").delay(200).fadeIn(300);
+        $("#question6").delay(20).fadeIn(300);
+        $("#rpsPreviewTitle").delay(20).fadeIn(300);
+        $("#rpsPreview").delay(20).fadeIn(300);
+        $("#submit").delay(20).fadeIn(300);
         $("#rpsPreview").html(challengeString);
 
         readyToSubmit = true;
@@ -495,7 +467,7 @@ function RPS() {
 
         /// No posts found newer than 7 days, go back to start.
         if (countPosts === 0) {
-            StepBackForm(3, 1, true);
+            StepBackForm(3, 1);
         }
 
     });
@@ -552,7 +524,15 @@ function RPS() {
             comment = jsonResponse;
         }
 
-        const key = dsteem.PrivateKey.fromString(privateKey);
+        // TEMP
+        $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
+
+        /*
+        Make submit post with below link, then see if it returns to spelmakare or only confirms. 
+        https://steemconnect.com/sign/comment?parent_author=pauthor&parent_permlink=pperm&author=author&permlink=perm&title=title&body=body&json_metadata=json
+        */
+
+        /*const key = PrivateKey.fromString(privateKey);
 
         client.broadcast.comment(comment, key).then(function (result) {
             if (formInUse === "#rpsForm") {
@@ -564,7 +544,7 @@ function RPS() {
             }
         }, function (error) {
             console.error(error);
-        });
+        });*/
 
         readyToSubmit = false;
         $("#submit").prop("disabled", true);
@@ -592,50 +572,9 @@ function RPS() {
     /// ACCOUNT FUNCTIONS
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /// Try to get account and verify private post key.
-    function VerifyAccount() {
-        GetAccount(userName).then(function (accounts) {
-            try {
-                var publicKey = Sanitize(accounts[0].posting.key_auths[0][0]);
-
-                /// Verfied account, public / private key match.
-                if (VerifyKeys(privateKey, publicKey)) {
-                    AllOKAllowSubmit();
-                }
-
-                /// Account failed verification.
-                else {
-                    StepBackForm(7, 6, false);
-                    console.log("User name found, but the private key is not correct.");
-                }
-
-                /// Account failed due to failure to follow steemit guidelines.
-            } catch (error) {
-                StepBackForm(7, 6, false);
-                console.log("User name not found because it is not steemit formated.");
-            }
-
-            /// Account failed as no such user.
-        }, function (error) {
-            StepBackForm(7, 6, false);
-            console.log("User name not found.");
-        });
-    }
-
     /// Try to get account.
     function GetAccount(name) {
         return client.database.getAccounts([name]);
-    }
-
-    ///Create public key from submitted private key and compare it to the public key from steemit lookup.
-    function VerifyKeys(privateKey, publicKey) {
-        try {
-            var pubFromPriv = dsteem.PrivateKey.fromString(privateKey).createPublic().toString();
-            return pubFromPriv.substring(3) === publicKey.substring(3);
-        }
-        catch (error) {
-            return false;
-        }
     }
 
 

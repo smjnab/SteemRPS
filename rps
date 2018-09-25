@@ -7,12 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Rock Paper Scissors game for the Steem blockchain.">
   <meta name="keywords" content="steem,steemit,blockchain,rps,rock,paper,scissors,game">
-  <script type="text/javascript" src="js/jquery.min.js"></script>
-  <script type="text/javascript" src="js/purify.min.js"></script>
-  <script type="text/javascript" src="js/dsteem.js"></script>
-  <script type="text/javascript" src="rps_files/rps.js"></script>
-  <script type="text/javascript" src="rps_files/encrypt.js"></script>
-  <script type="text/javascript" src="rps_files/json-comments.js"></script>
   <link rel="stylesheet" href="rps_files/style.css">
 </head>
 
@@ -58,32 +52,25 @@
             <span class="radioText">
               Raid (beats Steemit)
             </span>
-            <br/>
+            <br />
             <input type="radio" id="rpsChoice" name="rpsChoice" value="ponzi">
             <span class="radioText">
               Ponzi (beats Raid)
             </span>
-            <br/>
+            <br />
             <input type="radio" id="rpsChoice" name="rpsChoice" value="steemit">
             <span class="radioText">
               Steemit (beats Ponzi)
             </span>
           </span>
         </p>
-        <p class="question" id="question5">Excellent! Let's get this posted...</p>
-        <p class="question" id="question6">To be able to post the challenge, I will need to know your
+        <p class="question" id="question5">To be able to post the challenge, I will need to know your
           <a href="https://steemit.com" target="_blank">Steemit.com</a> user name.
           <br />
           <input class="inputText" id="userName" type="text" name="userName" autocomplete="off">
           <button class="inputNext" id="inputNext2" name="inputNext">Next</button>
         </p>
-        <p class="question" id="question7">
-          <span id="injectKeyLink"></span>
-          <br />
-          <input class="inputText" id="postKey" type="password" name="postKey" autocomplete="off">
-          <button class="inputNext" id="inputNext3" name="inputNext">Next</button>
-        </p>
-        <p class="question" id="question8">
+        <p class="question" id="question6">
           <!-- POST PREVIEW -->
           <div id="rpsPreviewTitle">
             <b>Post preview</b>
@@ -107,12 +94,12 @@
             <span class="radioText">
               Raid (beats Steemit)
             </span>
-            <br/>
+            <br />
             <input type="radio" id="rpsChoice" name="rpsChoice" value="ponzi">
             <span class="radioText">
               Ponzi (beats Raid)
             </span>
-            <br/>
+            <br />
             <input type="radio" id="rpsChoice" name="rpsChoice" value="steemit">
             <span class="radioText">
               Steemit (beats Ponzi)
@@ -120,12 +107,6 @@
           </span>
         </p>
         <p class="question" id="question2">
-          <span id="injectKeyLink"></span>
-          <br />
-          <input class="inputText" id="postKey" type="password" name="postKey" autocomplete="off">
-          <button class="inputNext" id="inputNext3" name="inputNext">Next</button>
-        </p>
-        <p class="question" id="question3">
           <!-- POST PREVIEW -->
           <div id="rpsPreviewTitle">
             <b>Post preview</b>
@@ -143,8 +124,6 @@
     <!-- FOOTER -->
     <footer>
       <div id="service">
-        <p>Service provided as is. I've done my best to make it stable and secure. I take no responsibility for your usage of
-          this service.</p>
         <p>Created by
           <a href="https://steemit.com/@smjn">@smjn</a> -
           <a href="https://spelmakare.se">Spelmakare.se</a>
@@ -152,6 +131,9 @@
       </div>
     </footer>
   </div>
+
+  <!-- Load Scripts -->
+  <script src="rps_files/bundle.js"></script>
 </body>
 
 </html>
