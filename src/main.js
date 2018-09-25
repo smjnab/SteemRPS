@@ -1,4 +1,4 @@
-const { Client, PrivateKey } = require("dsteem");
+const { Client } = require("dsteem");
 const $ = require("jquery");
 const DOMPurify = require("dompurify");
 const { MakeMD5 } = require("./encrypt");
@@ -140,15 +140,15 @@ function RPS() {
                         });
 
                     }, function (error) {
-                        console.error("GetDiscussion Failed: " + error);
+                        console.error("GetCommentsForUserName Failed: " + error);
                     });
 
                 }, function (error) {
-                    console.error("GetDiscussion Failed: " + error);
+                    console.error("GetComments Failed: " + error);
                 });
 
             }, function (error) {
-                console.error("GetDiscussion Failed: " + error);
+                console.error("GetBlogPosts Failed: " + error);
             });
         }
         else {
@@ -388,7 +388,7 @@ function RPS() {
             jsonChallenge.permlink = permLink;
             jsonChallenge.parent_author = userToChallenge;
             jsonChallenge.parent_permlink = permLinkParent;
-            jsonChallenge.body = challengeString;
+            jsonChallenge.body = encodeURIComponent(challengeString);
             jsonChallenge.json_metadata.challenged = userToChallenge;
             jsonChallenge.json_metadata.challenge_type = reasonForChallenge;
             jsonChallenge.json_metadata.challenger_rpschoicemd5 = rpsChoiceMD5;
@@ -398,7 +398,7 @@ function RPS() {
             jsonResponse.permlink = permLink;
             jsonResponse.parent_author = userToChallenge;
             jsonResponse.parent_permlink = permLinkParent;
-            jsonResponse.body = actualResponse;
+            jsonResponse.body = encodeURIComponent(actualResponse);
             jsonChallenge.json_metadata.challenger = userToChallenge;   ///Challenger is userToChallenge in response!
             jsonChallenge.json_metadata.result = winner;
         }
@@ -509,32 +509,25 @@ function RPS() {
 
         if (!readyToSubmit) return;
 
-        var comment;
+        var url = "https://steemconnect.com/sign/comment?";
 
         if (formInUse === "#rpsForm") {
-            var metaAsString = JSON.stringify(jsonChallenge.json_metadata);
+            var metaAsString = encodeURIComponent(JSON.stringify(jsonChallenge.json_metadata));
             jsonChallenge.json_metadata = metaAsString;
 
-            comment = jsonChallenge;
+            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}`;
         }
         else {
-            var metaAsString = JSON.stringify(jsonResponse.json_metadata);
+            var metaAsString = encodeURIComponent(JSON.stringify(jsonResponse.json_metadata));
             jsonResponse.json_metadata = metaAsString;
 
-            comment = jsonResponse;
+            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}`;
         }
 
-        // TEMP
-        $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
+        // Redirect to Steem Connect for safe posting.
+        window.location.replace(url);
 
         /*
-        Make submit post with below link, then see if it returns to spelmakare or only confirms. 
-        https://steemconnect.com/sign/comment?parent_author=pauthor&parent_permlink=pperm&author=author&permlink=perm&title=title&body=body&json_metadata=json
-        */
-
-        /*const key = PrivateKey.fromString(privateKey);
-
-        client.broadcast.comment(comment, key).then(function (result) {
             if (formInUse === "#rpsForm") {
                 $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
             }
@@ -542,9 +535,7 @@ function RPS() {
                 $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b><div id="rpsPreview"></div>`);
                 $("#rpsPreview").html(actualResponse);
             }
-        }, function (error) {
-            console.error(error);
-        });*/
+        */
 
         readyToSubmit = false;
         $("#submit").prop("disabled", true);
