@@ -51,12 +51,9 @@ input[type="radio"] {
 }
 
 #helperText {
+    margin-top: -10px;
     font-size: 0.85em;
     font-style: italic;
-}
-
-footer{
-    height: 100px;
 }
 
 #service{
@@ -66,10 +63,10 @@ footer{
     right: 10px;
     left: 10px;
     bottom: 10px;
-    color: antiquewhite;
-    background-color: #817f7f;
+    color: white;
+    background-color: #6a6769;
     border: 1px dotted #a86272;
-    line-height: 14px;
+    line-height: 1px;
     padding: 0px 5px 0px 5px;
 }
 

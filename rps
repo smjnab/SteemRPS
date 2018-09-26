@@ -122,14 +122,12 @@
     </div>
 
     <!-- FOOTER -->
-    <footer>
-      <div id="service">
-        <p>Created by
-          <a href="https://steemit.com/@smjn">@smjn</a> -
-          <a href="https://spelmakare.se">Spelmakare.se</a>
-        </p>
-      </div>
-    </footer>
+    <div id="service">
+      <p>Created by
+        <a href="https://steemit.com/@smjn">@smjn</a> -
+        <a href="https://spelmakare.se">Spelmakare.se</a>
+      </p>
+    </div>
   </div>
 
   <!-- Load Scripts -->
