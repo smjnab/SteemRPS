@@ -306,7 +306,6 @@ function RPS() {
                         /// Verfied account
                         else {
                             MakeMD5("create", userName, permLink, rpsChoice).then(function (result) {
-
                                 rpsChoiceMD5 = Sanitize(JSON.parse(result).md5);
                                 AllOKAllowSubmit();
 
@@ -343,16 +342,16 @@ function RPS() {
 
                         if (winner != "draw") actualResponse = `<a href="https://steemit.com/@${userToChallenge}">@${userToChallenge}</a>, I accept. Let's go! Winner Winner Raid Ponzi or Steemit Dinner?! <b>${userToChallenge}</b> throws <b>${rpsChoiceChallenger}</b>, <b>${userName}</b> repels with <b>${rpsChoice}</b>. Winner is <b>${winner}</b>!`;
                         else actualResponse = `<a href="https://steemit.com/@${userToChallenge}">@${userToChallenge}</a>, I accept. Let's go! Winner Winner Raid Ponzi or Steemit Dinner?! <b>${userToChallenge}</b> throws <b>${rpsChoiceChallenger}</b>, ${userName}</b> repels with <b>${rpsChoice}</b>. It's a <b>${winner}</b>!`;
+
+                        permLinkParent = permLink;
+                        permLink = "re-";
+                        permLink += permLinkParent;
+
+                        AllOKAllowSubmit();
                     }, function (error) {
                         ///TODO
+                        console.log(error)
                     });
-                    break;
-                case 2:
-                    permLinkParent = permLink;
-                    permLink = "re-";
-                    permLink += permLinkParent;
-
-                    AllOKAllowSubmit();
                     break;
             }
         }
@@ -403,10 +402,10 @@ function RPS() {
             jsonChallenge.json_metadata.result = winner;
         }
 
-        $("#question6").delay(20).fadeIn(300);
-        $("#rpsPreviewTitle").delay(20).fadeIn(300);
-        $("#rpsPreview").delay(20).fadeIn(300);
-        $("#submit").delay(20).fadeIn(300);
+        $("#question6").delay(200).fadeIn(300);
+        $("#rpsPreviewTitle").delay(200).fadeIn(300);
+        $("#rpsPreview").delay(200).fadeIn(300);
+        $("#submit").delay(200).fadeIn(300);
         $("#rpsPreview").html(challengeString);
 
         readyToSubmit = true;
