@@ -94,6 +94,18 @@ function RPS() {
     ///On start, make sure form is clean, visible and next buttons disabled
     $(document).ready(function () {
 
+        // If returning from Steem Connect, show a message about submission and link to it.
+        if (GetURLParameter("scredir")) {
+            userName = Sanitize(GetURLParameter("account"));
+
+            $("#rpsForm").remove();
+            $("#question1").remove();
+            $("#submit").remove();
+            $("#rpsFormResponse").css("visibility", "visible");
+            $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
+            return;
+        }
+
         /// Check if to show challenge or response form.
         if (userToChallenge = GetURLParameter("challenger")) {
 
@@ -232,13 +244,10 @@ function RPS() {
         var currentQuestionNr = currentQuestion.slice(-1);
         var nextQuestion = "#question" + ++currentQuestionNr;
 
-        /// Fecth form values and update vars and pending json.
+        /// Fetch form values and update vars and pending json.
         GetFormValProcessAndUpdate(currentQuestionNr - 1);
 
-        /// Fade out current question.
         $("#" + currentQuestion).fadeOut(100);
-
-        /// Fade in next question.
         $(nextQuestion).delay(200).fadeIn(300);
 
         /// Always scroll window to top, when fecthing posts you can end up far down.
@@ -254,7 +263,6 @@ function RPS() {
                 case 1:
                     $("#helperText").hide();
 
-                    /// Get user name of the one to be challenged.
                     userToChallenge = CreateUserName("#userToChallenge");
 
                     /// Check if account exists and start challenge with users name.
@@ -277,7 +285,6 @@ function RPS() {
 
                     break;
                 case 2:
-                    /// Get the reason for the challenge.
                     reasonForChallenge = Sanitize($("input[name=rpsChallengeChoice]:checked", formInUse).val());
                     break;
                 case 3:
@@ -289,11 +296,9 @@ function RPS() {
                     permLink += "-" + linkDate.substr(linkDate.length - 3);
                     break;
                 case 4:
-                    /// Get the Duel choice. Appending in last question.
                     rpsChoice = Sanitize($("input[name=rpsChoice]:checked", formInUse).val());
                     break;
                 case 5:
-                    /// Get user name of challenger.
                     userName = CreateUserName("#userName");
 
                     GetAccount(userName).then(function (accounts) {
@@ -320,7 +325,6 @@ function RPS() {
                         StepBackForm(5, 5);
                         console.log("User name not found.");
                     });
-
                     break;
             }
         }
@@ -357,6 +361,7 @@ function RPS() {
         }
     }
 
+    // Check who won the RPS round
     function WinnerWinnerRaidPonziOrSteemitDinner(rpsChoiceChallenger, rpsChoiceChallenged) {
         var challenger = userToChallenge;
         var challenged = userName;
@@ -377,6 +382,7 @@ function RPS() {
         ) winner = challenged;
     }
 
+    // Finalize the post body and values.
     function AllOKAllowSubmit() {
         if (formInUse === "#rpsForm") {
             AppendReasonToRequest(reasonForChallenge);
@@ -503,7 +509,6 @@ function RPS() {
 
     /// Check steem and update website on form submission.
     $(document).on("submit", formInUse, function (event) {
-        /// No regular form submission
         event.preventDefault();
 
         if (!readyToSubmit) return;
@@ -514,27 +519,21 @@ function RPS() {
             var metaAsString = encodeURIComponent(JSON.stringify(jsonChallenge.json_metadata));
             jsonChallenge.json_metadata = metaAsString;
 
-            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}`;
+            var redirURL = encodeURIComponent("?scredir=true&account=" + jsonChallenge.author);
+
+            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}+${redirURL}`;
         }
         else {
             var metaAsString = encodeURIComponent(JSON.stringify(jsonResponse.json_metadata));
             jsonResponse.json_metadata = metaAsString;
 
-            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}`;
+            var redirURL = encodeURIComponent("?scredir=true&account=" + jsonResponse.author);
+
+            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}+${redirURL}`;
         }
 
         // Redirect to Steem Connect for safe posting.
         window.location.replace(url);
-
-        /*
-            if (formInUse === "#rpsForm") {
-                $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b>`);
-            }
-            else {
-                $("#rpsPreviewTitle").html(`<b>Post submitted! See it on <a href="https://steemit.com/@${userName}/comments">Steemit.com</a>.</b><div id="rpsPreview"></div>`);
-                $("#rpsPreview").html(actualResponse);
-            }
-        */
 
         readyToSubmit = false;
         $("#submit").prop("disabled", true);

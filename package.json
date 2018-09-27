@@ -1,0 +1,25 @@
+{
+  "name": "steemrps",
+  "version": "1.0.0",
+  "description": "Rock Paper Scissors for the Steem blockchain.",
+  "main": "src/main.js",
+  "dependencies": {
+    "dompurify": "^1.0.8",
+    "dsteem": "^0.10.1",
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/smjnab/SteemRPS.git"
+  },
+  "author": "Spelmakare Jens Nilsson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/smjnab/SteemRPS/issues"
+  },
+  "homepage": "https://github.com/smjnab/SteemRPS#readme"
+}
