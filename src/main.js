@@ -521,7 +521,7 @@ function RPS() {
 
             var redirURL = encodeURIComponent("?scredir=true&account=" + jsonChallenge.author);
 
-            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}+${redirURL}`;
+            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}${redirURL}`;
         }
         else {
             var metaAsString = encodeURIComponent(JSON.stringify(jsonResponse.json_metadata));
@@ -529,7 +529,7 @@ function RPS() {
 
             var redirURL = encodeURIComponent("?scredir=true&account=" + jsonResponse.author);
 
-            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}+${redirURL}`;
+            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}${redirURL}`;
         }
 
         // Redirect to Steem Connect for safe posting.
