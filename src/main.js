@@ -97,7 +97,7 @@ function RPS() {
         // If returning from Steem Connect, show a message about submission and link to it.
         if (GetURLParameter("scredir")) {
             userName = Sanitize(GetURLParameter("account"));
-
+            formInUse = "rpsFormResponse";
             $("#rpsForm").remove();
             $("#question1").remove();
             $("#submit").remove();
@@ -519,17 +519,17 @@ function RPS() {
             var metaAsString = encodeURIComponent(JSON.stringify(jsonChallenge.json_metadata));
             jsonChallenge.json_metadata = metaAsString;
 
-            var redirURL = encodeURIComponent("?scredir=true&account=" + jsonChallenge.author);
+            var redirURL = encodeURIComponent("https://spelmakare.se/steem/rps?scredir=true&account=" + jsonChallenge.author);
 
-            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}${redirURL}`;
+            url += `parent_author=${jsonChallenge.parent_author}&parent_permlink=${jsonChallenge.parent_permlink}&author=${jsonChallenge.author}&permlink=${jsonChallenge.permlink}&body=${jsonChallenge.body}&json_metadata=${jsonChallenge.json_metadata}&redirect_uri=${redirURL}`;
         }
         else {
             var metaAsString = encodeURIComponent(JSON.stringify(jsonResponse.json_metadata));
             jsonResponse.json_metadata = metaAsString;
 
-            var redirURL = encodeURIComponent("?scredir=true&account=" + jsonResponse.author);
+            var redirURL = encodeURIComponent("https://spelmakare.se/steem/rps?scredir=true&account=" + jsonResponse.author);
 
-            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${encodeURIComponent(window.location.href)}${redirURL}`;
+            url += `parent_author=${jsonResponse.parent_author}&parent_permlink=${jsonResponse.parent_permlink}&author=${jsonResponse.author}&permlink=${jsonResponse.permlink}&body=${jsonResponse.body}&json_metadata=${jsonResponse.json_metadata}&redirect_uri=${redirURL}`;
         }
 
         // Redirect to Steem Connect for safe posting.
